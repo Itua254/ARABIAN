@@ -1,0 +1,33 @@
+{
+  "_comment": "CSS selector map per bookmaker. Edit this file and restart to hot-swap selectors — no code changes required.",
+
+  "betway": {
+    "odds_display":      "",
+    "odds_button":       "",
+    "stake_input":       "",
+    "place_bet_button":  "",
+    "confirm_button":    "",
+    "success_indicator": "",
+    "dismiss_overlay":   ""
+  },
+
+  "pinnacle": {
+    "odds_display":      "",
+    "odds_button":       "",
+    "stake_input":       "",
+    "place_bet_button":  "",
+    "confirm_button":    "",
+    "success_indicator": "",
+    "dismiss_overlay":   ""
+  },
+
+  "onexbet": {
+    "odds_display":      "",
+    "odds_button":       "",
+    "stake_input":       "",
+    "place_bet_button":  "",
+    "confirm_button":    "",
+    "success_indicator": "",
+    "dismiss_overlay":   "button[data-testid='close-modal']"
+  }
+}

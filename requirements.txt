@@ -1,0 +1,8 @@
+aiohttp==3.9.3
+python-dotenv==1.0.1
+redis==5.0.3
+playwright>=1.40.0
+playwright-stealth>=1.0.6
+betfairlightweight>=2.16.3
+pytest==8.2.0
+pytest-asyncio==0.23.6

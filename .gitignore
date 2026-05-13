@@ -1,0 +1,28 @@
+# Environments
+venv/
+.env
+.env.*
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# Logs & Temp
+*.log
+*.bak
+bot.pid
+dump.rdb
+mozzart_headless_false.png
+
+# Data Artifacts (Dynamic data from the engine)
+active_signals.json
+metrics_snapshot.json
+trade_journal.json
+trade_journal_latency.json
+treasury_snapshot.json
+events.jsonl
+state_*.json
+os/
+
+# IDE
+.vscode/
+.idea/

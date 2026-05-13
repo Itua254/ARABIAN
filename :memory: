@@ -1,0 +1,9 @@
+{
+  "betway": {
+    "name": "betway",
+    "success_rate": 1.0,
+    "avg_latency": 100.0,
+    "rejection_rate": 0.0,
+    "health_score": 0.9090909090909091
+  }
+}
