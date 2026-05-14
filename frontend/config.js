@@ -8,4 +8,4 @@
 //   are on the same origin (local development).
 // ─────────────────────────────────────────────────────────────
 
-const API_BASE_URL = '';   // ← change this to your backend URL when deploying
+const API_BASE_URL = 'https://arabian-arb-bot.loca.lt';   // ← Public tunnel back to your desktop

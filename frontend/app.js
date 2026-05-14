@@ -62,7 +62,8 @@ function setBannerState(connected, msg = '') {
 
 async function api(path, opts={}) {
     try {
-        const r = await fetch(`${API}/api/${path}`, opts);
+        const headers = { ...opts.headers, 'Bypass-Tunnel-Reminder': 'true' };
+        const r = await fetch(`${API}/api/${path}`, { ...opts, headers });
         if (!r.ok) {
             // HTTP error but server is reachable — hide banner, let caller handle
             setBannerState(true);
@@ -513,6 +514,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 clearInterval(pollTimer); pollTimer = null;
             }
+        });
+    }
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(err => {
+                console.warn('Service worker registration failed:', err);
+            });
         });
     }
 
