@@ -241,6 +241,7 @@ def detect_arbs(events: List[Dict]) -> List[Dict]:
             "bankroll":       BANKROLL,
             "detected_at":    detected_at,
             "age_sec":        round(time.time() - detected_at, 2),
+            "is_live":        best_over.get("is_live", False),
             "bookmaker_count": len({best_over["bookmaker"], best_under["bookmaker"]}),
             "legs": [
                 {

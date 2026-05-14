@@ -12,7 +12,7 @@ from state import TradeState, ExecResult
 from identity_manager import IdentityManager
 from bookmaker_profiler import BookmakerProfiler
 from metrics import MetricsCollector
-from config import DRY_RUN, EXECUTION_MODE, GRACEFUL_DEGRADATION_THRESHOLD
+from config import DRY_RUN, EXECUTION_MODE, GRACEFUL_DEGRADATION_THRESHOLD, MIN_EDGE
 
 from adapters.betway_adapter   import BetWayAdapter
 from adapters.pinnacle_adapter import PinnacleAdapter
@@ -168,12 +168,12 @@ class ExecutionEngine:
             if live_odds > 0 and live_odds != leg["odds"]:
                 # Check if we still have an edge
                 new_edge = 1.0 - ((1.0 / live_odds) + (1.0 / other_leg_odds))
-                if new_edge < 0.01: # 1.0% floor
-                    logger.critical(f"[{event_id}] Odds drift: {leg['odds']} → {live_odds}. New edge {new_edge:.2%} < 1.0%. Aborting.")
+                if new_edge < MIN_EDGE:
+                    logger.critical(f"[{event_id}] Odds drift: {leg['odds']} → {live_odds}. New edge {new_edge:.2%} < {MIN_EDGE:.2%}. Aborting.")
                     log_event("odds_drift_abort", {"event_id": event_id, "expected": leg["odds"], "live": live_odds, "new_edge": new_edge})
                     return False
                 else:
-                    logger.warning(f"[{event_id}] Odds drift: {leg['odds']} → {live_odds}. New edge {new_edge:.2%} >= 1.0%. Proceeding with slippage.")
+                    logger.warning(f"[{event_id}] Odds drift: {leg['odds']} → {live_odds}. New edge {new_edge:.2%} >= {MIN_EDGE:.2%}. Proceeding with slippage.")
                     log_event("odds_drift_proceed", {"event_id": event_id, "expected": leg["odds"], "live": live_odds, "new_edge": new_edge})
 
             if not revalidated:

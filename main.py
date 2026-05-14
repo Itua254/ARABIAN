@@ -74,8 +74,65 @@ async def execution_delay(arb: Dict[str, Any]) -> bool:
     return True
 
 
+async def check_manual_targets(events: list):
+    try:
+        import json
+        from pathlib import Path
+        from difflib import SequenceMatcher
+        from notifier import send_telegram_text
+        
+        targets_path = Path("manual_targets.json")
+        if not targets_path.exists():
+            return
+            
+        targets = json.loads(targets_path.read_text())
+        if not targets:
+            return
+            
+        hit_any = False
+        for target in targets:
+            if target.get("hit"):
+                continue
+                
+            t_match = target.get("match", "").lower()
+            t_market = target.get("market", "").lower()
+            t_odds = float(target.get("target_odds", 0.0))
+            if not target.get("auto_monitor"):
+                continue
+            
+            for e in events:
+                e_match = f"{e.get('home','')} vs {e.get('away','')}".lower()
+                e_selection = f"{e.get('selection','')} {e.get('line','')}".lower()
+                
+                ratio = SequenceMatcher(None, t_match, e_match).ratio()
+                if ratio > 0.6 and (t_market in e_selection or t_market in e.get("market_type", "").lower()):
+                    if e.get("odds", 0) >= t_odds:
+                        await send_telegram_text(f"🎯 <b>TARGET HIT!</b>\nMatch: {e_match.title()}\nSelection: {e_selection.title()} @ {e.get('odds')}\nBookie: {e.get('bookmaker')}")
+                        target["hit"] = True
+                        hit_any = True
+                        break
+                        
+        if hit_any:
+            targets_path.write_text(json.dumps(targets))
+    except Exception as e:
+        logger.error(f"Failed to check manual targets: {e}")
+
+
 async def run_cycle() -> None:
     global current_exposure, trades_timestamps, loss_count
+
+    # ── Engine Status Check ───────────────────────────────────
+    try:
+        import json
+        from pathlib import Path
+        status_path = Path("engine_status.json")
+        if status_path.exists():
+            status_data = json.loads(status_path.read_text())
+            if status_data.get("status") == "offline":
+                logger.info("Engine is OFFLINE. Sleeping...")
+                return
+    except Exception as e:
+        logger.error(f"Failed to read engine status: {e}")
 
     # ── Circuit breaker ───────────────────────────────────────
     if loss_count >= MAX_CONSECUTIVE_LOSSES:
@@ -99,6 +156,9 @@ async def run_cycle() -> None:
         logger.info("No events fetched.")
         return
 
+    # Call custom targets checker
+    asyncio.create_task(check_manual_targets(events))
+
     # 2. Detect
     try:
         arbs = process_events(events)
@@ -121,10 +181,8 @@ async def run_cycle() -> None:
     # Fires right here, before edge classification, Redis dedup, or
     # execution. The user sees every signal the moment it's found.
     for arb in arbs:
-        try:
-            await send_telegram_alert(arb)
-        except Exception as tg_err:
-            logger.warning(f"Telegram alert failed: {tg_err}")
+        # Fire asynchronously so we don't block execution
+        asyncio.create_task(send_telegram_alert(arb))
 
     # ── Smoke Screen Trigger (Move 2) ──
     if not arbs and random.random() < 0.05:  # 5% chance when no arbs

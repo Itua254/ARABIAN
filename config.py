@@ -16,7 +16,7 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # ── Arbitrage settings ────────────────────────────────────────
 MIN_EDGE         = float(os.getenv("MIN_EDGE", "0.001"))      # default 0.1%, .env overrides
-MAX_ODDS_AGE_SEC = int(os.getenv("MAX_ODDS_AGE_SEC", "90"))  # 90s — accounts for scraper cycle latency
+MAX_ODDS_AGE_SEC = int(os.getenv("MAX_ODDS_AGE_SEC", "15"))  # 15s max age for live arbs
 BANKROLL         = float(os.getenv("BANKROLL", "1000"))
 DRY_RUN          = os.getenv("DRY_RUN", "True").lower() in ("true", "1", "yes")
 
@@ -28,7 +28,7 @@ MAX_CONSECUTIVE_LOSSES = int(os.getenv("MAX_CONSECUTIVE_LOSSES", "5"))
 
 # ── Execution ─────────────────────────────────────────────────
 # Fastest / most reliable first
-EXECUTION_ORDER = os.getenv("EXECUTION_ORDER", "1xbet,melbet,betika,mozzartbet").split(",")
+EXECUTION_ORDER = os.getenv("EXECUTION_ORDER", "1xbet,melbet,betika").split(",")
 MAX_HEDGE_LOSS  = float(os.getenv("MAX_HEDGE_LOSS", "75.0"))  # Hard liability cap
 
 # ── Sports to monitor ─────────────────────────────────────────
@@ -39,7 +39,7 @@ SPORTS = os.getenv(
 
 # ── Bookmakers ────────────────────────────────────────────────
 TARGET_BOOKMAKERS = os.getenv(
-    "TARGET_BOOKMAKERS", "1xbet,melbet,betika,mozzartbet"
+    "TARGET_BOOKMAKERS", "1xbet,melbet,betika"
 ).split(",")
 
 # ── Markets ───────────────────────────────────────────────────
@@ -50,7 +50,7 @@ MARKETS = [
 ]
 
 # ── Timing ────────────────────────────────────────────────────
-POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", "30"))    # seconds between cycles
+POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", "3"))    # seconds between cycles
 DEDUP_TTL     = int(os.getenv("DEDUP_TTL", "3600"))      # 1 hr dedup window
 
 # ── Session Pool (v5 §5) ──────────────────────────────────────

@@ -2,102 +2,316 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eBitrate — Arbitrage Command Center</title>
-    <meta name="description" content="Real-time arbitrage trading dashboard for cross-bookmaker execution">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARABIAN Arb Engine</title>
+    <meta name="description" content="ARABIAN Arb Engine — Real-time arbitrage signal monitor.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand-icon">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                    <path d="M14 2L26 8V20L14 26L2 20V8L14 2Z" stroke="url(#grad1)" stroke-width="2" fill="none"/>
-                    <path d="M14 8L20 11V17L14 20L8 17V11L14 8Z" fill="url(#grad1)"/>
-                    <defs><linearGradient id="grad1" x1="0" y1="0" x2="28" y2="28">
-                        <stop offset="0%" stop-color="#6366f1"/>
-                        <stop offset="100%" stop-color="#06b6d4"/>
-                    </linearGradient></defs>
-                </svg>
-            </div>
-            <div class="brand-text">
-                <span class="brand-name">eBitrate</span>
-                <span class="brand-sub">Command Center</span>
-            </div>
-        </div>
+    <div class="app-container">
 
-        <nav class="sidebar-nav">
-            <a href="#dashboard" class="nav-item active" data-page="dashboard">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-                <span>Dashboard</span>
-            </a>
-            <a href="#trades" class="nav-item" data-page="trades">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
-                <span>Trade Journal</span>
-            </a>
-            <a href="#bookmakers" class="nav-item" data-page="bookmakers">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                <span>Bookmakers</span>
-            </a>
-            <a href="#treasury" class="nav-item" data-page="treasury">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 4H3a1 1 0 00-1 1v14a1 1 0 001 1h18a1 1 0 001-1V5a1 1 0 00-1-1z"/><path d="M2 9h20"/><circle cx="16" cy="14" r="2"/></svg>
-                <span>Treasury</span>
-            </a>
-            <a href="#hedges" class="nav-item" data-page="hedges">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span>Hedge Journal</span>
-            </a>
-            <a href="#signals" class="nav-item" data-page="signals">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                <span>Live Signals</span>
-            </a>
-            <a href="#metrics" class="nav-item" data-page="metrics">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                <span>System Metrics</span>
-            </a>
-            <a href="#settings" class="nav-item" data-page="settings">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-                <span>Settings</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="engine-status" id="engine-status">
-                <span class="status-dot"></span>
-                <span class="status-text">Connecting...</span>
-            </div>
-            <div class="sidebar-version">v5 Production</div>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content" id="main-content">
-        <header class="top-bar">
-            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-            </button>
-            <h1 class="page-title" id="page-title">Dashboard</h1>
-            <div class="top-bar-right">
-                <div class="refresh-indicator" id="refresh-indicator">
-                    <svg class="spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.22-8.56"/><path d="M21 3v5h-5"/></svg>
+        <!-- ── Header ─────────────────────────────────────── -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 </div>
-                <div class="top-bar-clock" id="top-clock"></div>
+                <span class="logo-text">ARABIAN</span>
+                <button id="engine-toggle-btn" class="engine-badge online">
+                    <span class="status-dot"></span>
+                    <span class="status-text">ONLINE</span>
+                </button>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="bookmakers-btn" title="Bookmaker Health">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                </button>
+                <button class="icon-btn" id="header-new-signal-btn" title="New Signal">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <button class="icon-btn notif-btn" id="notif-btn" title="Sound Settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+                </button>
             </div>
         </header>
 
-        <div class="page-container" id="page-container">
-            <!-- Pages rendered dynamically by app.js -->
-            <div class="loading-state">
-                <div class="loader"></div>
-                <p>Loading dashboard...</p>
+        <!-- ── Bookmaker Drawer ────────────────────────────── -->
+        <div class="bm-drawer" id="bm-drawer">
+            <div class="bm-drawer-header">
+                <span class="bm-drawer-title">Bookmaker Health</span>
+                <button class="close-drawer-btn" id="close-drawer-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="bm-list" id="bm-list">
+                <div class="bm-loading">Loading…</div>
             </div>
         </div>
-    </main>
+        <div class="drawer-overlay" id="drawer-overlay"></div>
 
+        <!-- ── API Connection Banner (hidden by default) ── -->
+        <div class="api-banner" id="api-banner" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="api-banner-text">Cannot reach backend — check API server</span>
+            <button id="api-retry-btn">Retry</button>
+        </div>
+
+        <!-- ── Main Content ───────────────────────────────── -->
+        <main class="main-content">
+
+            <!-- Title row -->
+            <div class="title-section">
+                <div>
+                    <h2 class="page-title">Your Signals</h2>
+                    <p class="page-subtitle" id="subtitle-text">Monitor arbitrage signals</p>
+                </div>
+                <button class="btn-new-signal" id="new-signal-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    New Signal
+                </button>
+            </div>
+
+            <!-- Auto Odds Monitor -->
+            <div class="monitor-card">
+                <div class="monitor-left">
+                    <div class="monitor-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div>
+                        <div class="monitor-title">Auto Odds Monitor</div>
+                        <div class="monitor-sub">Checks every 3s · Alerts when target hit</div>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="auto-monitor-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- Stats Grid 2x2 -->
+            <div class="stats-grid">
+                <div class="stat-card stat-active">
+                    <div class="stat-top">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        <span class="stat-number" id="stat-all">0</span>
+                    </div>
+                    <span class="stat-label">All</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span class="stat-number" id="stat-active">0</span>
+                    </div>
+                    <span class="stat-label">Active</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="stat-number" id="stat-triggered">0</span>
+                    </div>
+                    <span class="stat-label">Triggered</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <span class="stat-number" id="stat-cancelled">0</span>
+                    </div>
+                    <span class="stat-label">Cancelled</span>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs" id="filter-tabs">
+                <button class="filter-tab active" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="live">
+                    <span class="live-dot"></span>Live
+                </button>
+                <button class="filter-tab" data-filter="prematch">Pre-Match</button>
+            </div>
+
+            <!-- Signal Cards -->
+            <div class="signals-list" id="signals-list"></div>
+
+        </main>
+    </div>
+
+    <!-- ── Signal Card Template ──────────────────────────── -->
+    <template id="signal-card-template">
+        <div class="signal-card">
+
+            <!-- Card header -->
+            <div class="signal-card-header">
+                <span class="signal-badge">ACTIVE</span>
+                <div class="signal-card-actions">
+                    <button class="card-icon-btn btn-notify" title="Notify">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </button>
+                    <button class="card-icon-btn btn-delete" title="Delete">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Match name -->
+            <div class="signal-match"></div>
+
+            <!-- Date/time -->
+            <div class="signal-time">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="signal-time-text"></span>
+            </div>
+
+            <!-- Bookmaker tags (engine arbs) -->
+            <div class="bm-tags"></div>
+
+            <!-- Metrics row -->
+            <div class="signal-metrics">
+                <div class="metric-box">
+                    <span class="metric-label">MARKET</span>
+                    <span class="metric-value metric-green metric-market"></span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-label">EDGE</span>
+                    <span class="metric-value metric-edge"></span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-label">PROFIT</span>
+                    <span class="metric-value metric-profit"></span>
+                </div>
+            </div>
+
+            <!-- Odds detail (engine arbs) -->
+            <div class="odds-detail">
+                <div class="odds-row">
+                    <span class="odds-bm bm1-label"></span>
+                    <span class="odds-val bm1-odds"></span>
+                    <span class="odds-arrow bm1-dir"></span>
+                </div>
+                <div class="odds-row">
+                    <span class="odds-bm bm2-label"></span>
+                    <span class="odds-val bm2-odds"></span>
+                    <span class="odds-arrow bm2-dir"></span>
+                </div>
+            </div>
+
+            <!-- Update action (manual targets only) -->
+            <div class="update-action">
+                <input type="text" class="odds-input" placeholder="Paste current odds...">
+                <button class="btn-update">Update</button>
+            </div>
+
+        </div>
+    </template>
+
+    <!-- ── New Signal Modal ──────────────────────────────── -->
+    <div class="modal-overlay" id="signal-modal">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h2>New Signal</h2>
+                <button class="close-modal-btn" id="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Live Match Search -->
+                <div class="form-group search-group">
+                    <label>Search Match</label>
+                    <div class="search-wrapper">
+                        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="target-match" class="search-input" placeholder="Search match e.g. Arsenal vs Chelsea" autocomplete="off">
+                        <button class="search-clear" id="search-clear" style="display:none">&times;</button>
+                    </div>
+                    <!-- Dropdown results -->
+                    <div class="search-results" id="search-results" style="display:none"></div>
+                    <!-- Selected match pill -->
+                    <div class="selected-match" id="selected-match" style="display:none">
+                        <span id="selected-match-text"></span>
+                        <button class="deselect-match" id="deselect-match">&times;</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Market</label>
+                    <input type="text" id="target-market" placeholder="e.g. Under 3.5">
+                </div>
+                <div class="form-group">
+                    <label>Target Odds</label>
+                    <input type="number" step="0.01" id="target-odds" placeholder="e.g. 2.10">
+                </div>
+                <div class="form-group">
+                    <label>Watch on Bookmakers</label>
+                    <p class="form-hint">Select which bookmakers to monitor</p>
+                    <div class="bm-chips" id="bm-chips"></div>
+                </div>
+                <div class="form-group row-group">
+                    <div>
+                        <label>Auto Monitor</label>
+                        <p class="form-hint">Receive Telegram alerts when odds hit</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="target-auto-monitor" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <button class="btn-primary full-width" id="submit-target-btn">Save Signal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Sound Modal ──────────────────────────────────── -->
+    <div class="modal-overlay" id="sound-modal">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h2>🔔 Sound & Alerts</h2>
+                <button class="close-modal-btn" id="close-sound-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row-group">
+                    <div>
+                        <label>Enable Alert Sound</label>
+                        <p class="form-hint">Play a sound when a target is hit</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sound-enabled-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="form-group" id="tone-picker-group">
+                    <label>Tone</label>
+                    <div class="tone-grid">
+                        <button class="tone-btn selected" data-tone="beep" type="button"><span>📣</span>Beep</button>
+                        <button class="tone-btn" data-tone="double" type="button"><span>📯</span>Double</button>
+                        <button class="tone-btn" data-tone="rising" type="button"><span>🎵</span>Rising</button>
+                        <button class="tone-btn" data-tone="urgent" type="button"><span>🚨</span>Urgent</button>
+                        <button class="tone-btn" data-tone="chime" type="button"><span>🔔</span>Chime</button>
+                        <button class="tone-btn" data-tone="custom" type="button"><span>📂</span>Custom</button>
+                    </div>
+                </div>
+                <div class="form-group" id="custom-upload-group" style="display:none">
+                    <label>Upload Ringtone</label>
+                    <div class="upload-zone" id="upload-zone">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <p>Tap to choose audio file</p>
+                        <p class="form-hint" id="upload-filename">No file selected</p>
+                        <input type="file" id="ringtone-file" accept="audio/*" style="display:none">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Volume & Preview</label>
+                    <div class="preview-row">
+                        <input type="range" id="sound-volume" min="0" max="100" value="70" class="vol-slider">
+                        <button class="btn-preview" id="preview-sound-btn" type="button">Test</button>
+                    </div>
+                </div>
+                <button class="btn-primary full-width" id="save-sound-btn">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

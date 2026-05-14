@@ -41,6 +41,8 @@ ENV_PATH = BASE_DIR / ".env"
 EVENTS_PATH = BASE_DIR / "events.jsonl"
 SIGNALS_PATH = BASE_DIR / "active_signals.json"
 TREASURY_PATH = BASE_DIR / "treasury_snapshot.json"
+ENGINE_STATUS_PATH = BASE_DIR / "engine_status.json"
+MANUAL_TARGETS_PATH = BASE_DIR / "manual_targets.json"
 
 
 def _read_json(path: Path, default=None):
@@ -73,6 +75,7 @@ def get_status():
     running = _engine_running()
     return {
         "engine_running": running,
+        "engine_state": _read_json(ENGINE_STATUS_PATH, {"status": "online"}).get("status", "online"),
         "uptime_sec": metrics.get("uptime_sec", 0),
         "cycles": metrics.get("cycles", 0),
         "snapshot_at": metrics.get("snapshot_at", ""),
@@ -238,6 +241,81 @@ def _get_config_value(key: str, default: str = "") -> str:
         pass
     return default
 
+
+from pydantic import BaseModel
+
+class ToggleRequest(BaseModel):
+    status: str  # "online" or "offline"
+
+@app.post("/api/engine/toggle")
+def toggle_engine(req: ToggleRequest):
+    if req.status not in ["online", "offline"]:
+        return {"error": "Invalid status"}
+    
+    with open(ENGINE_STATUS_PATH, "w") as f:
+        json.dump({"status": req.status}, f)
+    
+    return {"status": req.status}
+
+
+class ManualTarget(BaseModel):
+    match: str
+    market: str
+    target_odds: float
+    auto_monitor: bool
+    bookmakers: list = []  # list of selected bookmaker names
+
+@app.post("/api/manual_targets")
+def add_manual_target(target: ManualTarget):
+    targets = _read_json(MANUAL_TARGETS_PATH, [])
+    target_dict = target.dict()
+    target_dict["id"] = str(time.time())
+    target_dict["status"] = "active"
+    targets.append(target_dict)
+    
+    with open(MANUAL_TARGETS_PATH, "w") as f:
+        json.dump(targets, f)
+        
+    return {"success": True, "target": target_dict}
+
+@app.get("/api/manual_targets")
+def get_manual_targets():
+    return _read_json(MANUAL_TARGETS_PATH, [])
+
+
+@app.delete("/api/manual_targets/{target_id}")
+def delete_manual_target(target_id: str):
+    targets = _read_json(MANUAL_TARGETS_PATH, [])
+    new_targets = [t for t in targets if t.get("id") != target_id]
+    with open(MANUAL_TARGETS_PATH, "w") as f:
+        json.dump(new_targets, f)
+    return {"success": True, "removed": len(targets) - len(new_targets)}
+
+
+@app.get("/api/bookmaker-list")
+def get_bookmaker_list():
+    """Return all engine bookmakers with health data for the frontend selector."""
+    try:
+        from config import TARGET_BOOKMAKERS, EXECUTION_ORDER
+        configured = TARGET_BOOKMAKERS
+    except Exception:
+        configured = ["1xbet", "melbet", "betika"]
+
+    profiles = _read_json(BOOKMAKER_PROFILES_PATH, {})
+
+    result = []
+    for name in configured:
+        profile = profiles.get(name, {})
+        health = profile.get("health", 1.0)
+        balance = profile.get("balance", None)
+        result.append({
+            "name": name,
+            "display": name.replace("1xbet", "1xBet").replace("melbet", "Melbet").replace("betika", "Betika"),
+            "health": health,
+            "balance": balance,
+            "status": "healthy" if health >= 0.7 else ("degraded" if health >= 0.3 else "offline"),
+        })
+    return result
 
 # ── Static file serving ───────────────────────────────────────
 FRONTEND_DIR = BASE_DIR / "frontend"
