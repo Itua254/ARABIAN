@@ -89,7 +89,7 @@ class BetikaScraper(BaseBookmakerScraper):
         self.im = identity_manager
         self.bookmaker = "betika"
 
-    async def scrape_live_corners(self) -> List[Dict]:
+    async def scrape_live_corners(self, fetch_live: bool = True, fetch_prematch: bool = False) -> List[Dict]:
         events: List[Dict] = []
 
         try:
@@ -155,6 +155,11 @@ class BetikaScraper(BaseBookmakerScraper):
                 # Future match — prematch
                 minute = 0
                 is_live = False
+
+            if is_live and not fetch_live:
+                continue
+            if not is_live and not fetch_prematch:
+                continue
 
             odds_groups = match.get("odds") or []
             match_had_markets = False

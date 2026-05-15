@@ -554,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // New Signal modal
     const openSig  = () => {
+        console.log('New Signal icon clicked'); // DUMMY HANDLER
         selectedBookmakers.clear();
         renderChips();
         openModal('signal-modal');
@@ -591,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Sound modal
     const openSnd  = () => {
+        console.log('Notification icon clicked'); // DUMMY HANDLER
         document.getElementById('sound-enabled-toggle').checked = Sound.enabled;
         document.getElementById('sound-volume').value = Math.round(Sound.volume * 100);
         document.querySelectorAll('.tone-btn').forEach(b=>b.classList.toggle('selected', b.dataset.tone===Sound.tone));

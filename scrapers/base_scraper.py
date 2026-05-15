@@ -24,7 +24,7 @@ class BaseBookmakerScraper(ABC):
     """
     
     @abstractmethod
-    async def scrape_live_corners(self) -> List[Dict]:
+    async def scrape_live_corners(self, fetch_live: bool = True, fetch_prematch: bool = False) -> List[Dict]:
         """
         Scrapes live matches and extracts Corners Over/Under markets.
         Must execute < 15s to maintain freshness.

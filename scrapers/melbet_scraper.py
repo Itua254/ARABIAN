@@ -11,7 +11,7 @@ class MelbetScraper(BaseBookmakerScraper):
         self.im = identity_manager
         self.bookmaker = "melbet"
         
-    async def scrape_live_corners(self) -> List[Dict]:
+    async def scrape_live_corners(self, fetch_live: bool = True, fetch_prematch: bool = False) -> List[Dict]:
         events = []
         ctx = await self.im.get_context(f"{self.bookmaker}_scraper")
         if not ctx:
@@ -29,10 +29,11 @@ class MelbetScraper(BaseBookmakerScraper):
                 logger.warning(f"[{self.bookmaker}] page.goto exception (continuing): {e}")
             
             # Melbet uses the exact same backend as 1xBet
-            urls = [
-                ("LiveFeed", "https://melbet.ke/service-api/LiveFeed/Get1x2_VZip?sports=1&count=50&lng=en&mode=4&getEmpty=true&noFilterBlockEvent=true"),
-                ("LineFeed", "https://melbet.ke/service-api/LineFeed/Get1x2_VZip?sports=1&count=50&lng=en&mode=4")
-            ]
+            urls = []
+            if fetch_live:
+                urls.append(("LiveFeed", "https://melbet.ke/service-api/LiveFeed/Get1x2_VZip?sports=1&count=50&lng=en&mode=4&getEmpty=true&noFilterBlockEvent=true"))
+            if fetch_prematch:
+                urls.append(("LineFeed", "https://melbet.ke/service-api/LineFeed/Get1x2_VZip?sports=1&count=50&lng=en&mode=4"))
             
             for feed_type, url in urls:
                 data = None

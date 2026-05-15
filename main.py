@@ -53,6 +53,7 @@ pnl_engine        = PnLEngine()
 current_exposure: float    = 0.0
 trades_timestamps: list    = []
 loss_count: int            = 0
+last_prematch_fetch: float = 0.0
 
 
 def can_execute(stake: float) -> bool:
@@ -69,7 +70,10 @@ def throttle() -> bool:
 async def execution_delay(arb: Dict[str, Any]) -> bool:
     """Check arb latency kill-switch (v6 §5)"""
     age = time.time() - arb.get("detected_at", time.time())
-    if age > 1.0:
+    is_live = arb.get("is_live", True)
+    if is_live and age > 1.0:
+        return False
+    elif not is_live and age > 15.0:
         return False
     return True
 
@@ -96,7 +100,7 @@ async def check_manual_targets(events: list):
                 
             t_match = target.get("match", "").lower()
             t_market = target.get("market", "").lower()
-            t_odds = float(target.get("target_odds", 0.0))
+            t_odds = float(tarrr.get("target_odds", 0.0))
             if not target.get("auto_monitor"):
                 continue
             
@@ -119,7 +123,7 @@ async def check_manual_targets(events: list):
 
 
 async def run_cycle() -> None:
-    global current_exposure, trades_timestamps, loss_count
+    global current_exposure, trades_timestamps, loss_count, last_prematch_fetch
 
     # ── Engine Status Check ───────────────────────────────────
     try:
@@ -145,8 +149,13 @@ async def run_cycle() -> None:
 
     # 1. Fetch (V6 Scraper Coordinator)
     fetch_start = time.time()
+    fetch_prematch = False
+    if time.time() - last_prematch_fetch > 60:
+        fetch_prematch = True
+        last_prematch_fetch = time.time()
+        
     try:
-        events = await fetch_all_odds(identity_manager)
+        events = await fetch_all_odds(identity_manager, fetch_live=True, fetch_prematch=fetch_prematch)
     except Exception as e:
         logger.error({"event": "fetch_failed", "error": str(e)})
         return

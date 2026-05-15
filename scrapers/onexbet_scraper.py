@@ -15,7 +15,7 @@ class OnexBetScraper(BaseBookmakerScraper):
         self.im = identity_manager
         self.bookmaker = "1xbet"
         
-    async def scrape_live_corners(self) -> List[Dict]:
+    async def scrape_live_corners(self, fetch_live: bool = True, fetch_prematch: bool = False) -> List[Dict]:
         events = []
         ctx = await self.im.get_context(f"{self.bookmaker}_scraper")
         if not ctx:
@@ -32,10 +32,11 @@ class OnexBetScraper(BaseBookmakerScraper):
             except Exception as e:
                 logger.warning(f"[{self.bookmaker}] page.goto exception (continuing): {e}")
             
-            urls = [
-                ("LiveFeed", "https://1xbet.com/service-api/LiveFeed/Get1x2_VZip?sports=1&count=50&lng=en&mode=4&getEmpty=true&noFilterBlockEvent=true"),
-                ("LineFeed", "https://1xbet.com/service-api/LineFeed/Get1x2_VZip?sports=1&count=50&lng=en&mode=4")
-            ]
+            urls = []
+            if fetch_live:
+                urls.append(("LiveFeed", "https://1xbet.com/service-api/LiveFeed/Get1x2_VZip?sports=1&count=50&lng=en&mode=4&getEmpty=true&noFilterBlockEvent=true"))
+            if fetch_prematch:
+                urls.append(("LineFeed", "https://1xbet.com/service-api/LineFeed/Get1x2_VZip?sports=1&count=50&lng=en&mode=4"))
             
             for feed_type, url in urls:
                 try:

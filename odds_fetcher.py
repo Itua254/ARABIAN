@@ -19,7 +19,7 @@ from logger import get_logger
 logger = get_logger("odds_fetcher")
 
 
-async def fetch_all_odds(identity_manager) -> List[Dict]:
+async def fetch_all_odds(identity_manager, fetch_live: bool = True, fetch_prematch: bool = False) -> List[Dict]:
     """
     Runs all enabled scrapers concurrently and aggregates live events.
     Each scraper is isolated — a failure in one does not block the others.
@@ -35,7 +35,7 @@ async def fetch_all_odds(identity_manager) -> List[Dict]:
     
     scrapers = [all_scrapers[bm] for bm in EXECUTION_ORDER if bm in all_scrapers]
 
-    tasks   = [s.scrape_live_corners() for s in scrapers]
+    tasks   = [s.scrape_live_corners(fetch_live=fetch_live, fetch_prematch=fetch_prematch) for s in scrapers]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     all_events: List[Dict] = []
