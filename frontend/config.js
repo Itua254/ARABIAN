@@ -8,4 +8,4 @@
 //   are on the same origin (local development).
 // ─────────────────────────────────────────────────────────────
 
-const API_BASE_URL = 'https://lucky-jellyfish-62.loca.lt';   // ← Public tunnel back to your desktop
+const API_BASE_URL = 'https://aybta-41-90-125-163.run.pinggy-free.link';   // ← Public tunnel back to your desktop
