@@ -357,9 +357,18 @@ async function checkEngine() {
     const btn  = document.getElementById('engine-toggle-btn');
     const span = btn?.querySelector('.status-text');
     if (!btn || !span) return;
-    const online = s.engine_state !== 'offline';
-    btn.classList.toggle('offline', !online);
-    span.textContent = online ? 'ONLINE' : 'OFFLINE';
+    
+    // actual running status (process alive)
+    const running = s.engine_running === true;
+    // desired toggle status (online/offline)
+    const desired = s.engine_state !== 'offline';
+    
+    btn.classList.toggle('offline', !running);
+    if (!running) {
+        span.textContent = 'PROCESS DOWN';
+    } else {
+        span.textContent = desired ? 'ONLINE' : 'PAUSED';
+    }
 }
 
 // ─────────────────────────────────────────────────────────────
